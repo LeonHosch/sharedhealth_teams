@@ -55,19 +55,23 @@ public class SharedHealth implements ModInitializer {
             }
             if (world.getGameRules().getValue(SYNC_HEALTH)) {
                 SharedHealthComponent component = SHARED_HEALTH.get(world.getScoreboard());
-                if (component.getHealth() > 20 && limitHealthValue) component.setHealth(20);
-                float finalKnownHealth = component.getHealth();
+                // if (component.getHealth() > 20 && limitHealthValue) component.setHealth(20);
+                // float finalKnownHealth = component.getHealth();
                 world.getPlayers().forEach(playerEntity -> {
                     try {
                         float currentHealth = playerEntity.getHealth();
+                        if (currentHealth > 0.0f) {
+                            String team = playerEntity.getScoreboardTeam() != null ? playerEntity.getScoreboardTeam().getName() : "default";
+                            float knownHealth = component.getHealth(team);
 
-                        if (currentHealth > finalKnownHealth) {
-                            playerEntity.setHealth(finalKnownHealth);
-                            playerEntity.sendMessageToClient(Text.literal("Leben wurde angepasst"), false);
-                            // playerEntity.damage(world, world.getDamageSources().genericKill(), currentHealth - finalKnownHealth);
-                        } else if (currentHealth < finalKnownHealth) {
-                            playerEntity.setHealth(finalKnownHealth);
-                            // playerEntity.heal(finalKnownHealth - currentHealth);
+                            if (currentHealth > knownHealth) {
+                                playerEntity.setHealth(knownHealth);
+                                playerEntity.sendMessageToClient(Text.literal("Leben wurde angepasst"), false);
+                                // playerEntity.damage(world, world.getDamageSources().genericKill(), currentHealth - finalKnownHealth);
+                            } else if (currentHealth < knownHealth) {
+                                playerEntity.setHealth(knownHealth);
+                                // playerEntity.heal(finalKnownHealth - currentHealth);
+                            }
                         }
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
@@ -105,8 +109,8 @@ public class SharedHealth implements ModInitializer {
             }
         }));
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> handler.player.setHealth(SHARED_HEALTH.get(handler.player.getEntityWorld().getScoreboard()).getHealth()));
+        // ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> handler.player.setHealth(SHARED_HEALTH.get(handler.player.getEntityWorld().getScoreboard()).getHealth()));
 
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> newPlayer.setHealth(SHARED_HEALTH.get(newPlayer.getEntityWorld().getScoreboard()).getHealth()));
+        // ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> newPlayer.setHealth(SHARED_HEALTH.get(newPlayer.getEntityWorld().getScoreboard()).getHealth()));
     }
 }

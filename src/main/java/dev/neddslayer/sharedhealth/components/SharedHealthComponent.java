@@ -7,9 +7,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SharedHealthComponent implements IHealthComponent {
 
-    float health = 20;
+    private final Map<String, Float> teamHealth = new HashMap<>();
 
     Scoreboard scoreboard;
     MinecraftServer server;
@@ -20,22 +23,22 @@ public class SharedHealthComponent implements IHealthComponent {
     }
 
     @Override
-    public float getHealth() {
-        return this.health;
+    public float getHealth(String team) {
+        return teamHealth.getOrDefault(team, 20.0f);
     }
 
     @Override
-    public void setHealth(float health) {
-        this.health = health ;
+    public void setHealth(String team, float health) {
+        teamHealth.put(team, health);
     }
 
     @Override
     public void readData(ReadView readView) {
-        this.health = readView.getFloat("playerHealth", 0.0f);  // Default to 0.0f if not present
+
     }
 
     @Override
     public void writeData(WriteView writeView) {
-        writeView.putFloat("playerHealth", this.health);
+
     }
 }

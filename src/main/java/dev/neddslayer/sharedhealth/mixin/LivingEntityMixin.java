@@ -28,9 +28,12 @@ public abstract class LivingEntityMixin extends Entity {
         if ((LivingEntity) (Object) this instanceof ServerPlayerEntity player && this.isAlive()) {
             // float currentHealth = player.getHealth();
             SharedHealthComponent component = SHARED_HEALTH.get(player.getEntityWorld().getScoreboard());
-            float knownHealth = component.getHealth();
+            String team = player.getScoreboardTeam() != null ? player.getScoreboardTeam().getName() : "default";
+            float knownHealth = component.getHealth(team);
 
-            component.setHealth(knownHealth + amount);
+            float newHealth = knownHealth + amount;
+            if (newHealth > 20.0f) newHealth = 20.0f;
+            component.setHealth(team, newHealth);
             // if (currentHealth == knownHealth) {
             //     component.setHealth(knownHealth + amount);
             // }

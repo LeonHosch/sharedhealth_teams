@@ -16,9 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static dev.neddslayer.sharedhealth.components.SharedComponentsInitializer.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract ServerWorld getEntityWorld();
+    private static final Set<String> killingTeams = new HashSet<>();
 
     public ServerPlayerEntityMixin(World world, GameProfile profile) {
         super(world, profile);
@@ -30,9 +34,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 		if (cir.getReturnValue() && this.isAlive()) {
 			// float currentHealth = this.getHealth();
 			SharedHealthComponent component = SHARED_HEALTH.get(this.getEntityWorld().getScoreboard());
-			float knownHealth = component.getHealth();
-
-            component.setHealth(knownHealth - amount);
+            String team = this.getScoreboardTeam() != null ? this.getScoreboardTeam().getName() : "default";
+            float knownHealth = component.getHealth(team);
+            component.setHealth(team, knownHealth - amount);
 			// if (currentHealth != knownHealth) {
 			// 	component.setHealth(currentHealth);
 			// }
@@ -41,9 +45,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "onDeath", at = @At("TAIL"))
     public void killEveryoneOnDeath(DamageSource damageSource, CallbackInfo ci) {
-        this.getEntityWorld().getServer().getPlayerManager().getPlayerList().forEach(p -> p.kill(this.getEntityWorld()));
-        SHARED_HEALTH.get(this.getEntityWorld().getScoreboard()).setHealth(20.0f);
+        String teamstr = this.getScoreboardTeam() != null ? this.getScoreboardTeam().getName() : "default";
+
+        if (killingTeams.contains(teamstr)) {
+            return;
+        }
+
+        killingTeams.add(teamstr);
+        var team = this.getScoreboardTeam();
+        
+        this.getEntityWorld().getServer().getPlayerManager().getPlayerList().stream().filter(p -> p.getScoreboardTeam() == team).forEach(p -> p.kill(this.getEntityWorld()));
+
+        SHARED_HEALTH.get(this.getEntityWorld().getScoreboard()).setHealth(teamstr, 20.0f);
         SHARED_HUNGER.get(this.getEntityWorld().getScoreboard()).setHunger(20);
 		SHARED_SATURATION.get(this.getEntityWorld().getScoreboard()).setSaturation(20.0f);
+        killingTeams.remove(teamstr);
     }
 }
