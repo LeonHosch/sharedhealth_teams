@@ -28,12 +28,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     public void damageListener(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
 		// ensure that damage is only taken if the damage listener is handled; you shouldn't be able to punch invulnerable players, etc.
 		if (cir.getReturnValue() && this.isAlive()) {
-			float currentHealth = this.getHealth();
+			// float currentHealth = this.getHealth();
 			SharedHealthComponent component = SHARED_HEALTH.get(this.getEntityWorld().getScoreboard());
 			float knownHealth = component.getHealth();
-			if (currentHealth != knownHealth) {
-				component.setHealth(currentHealth);
-			}
+
+            component.setHealth(knownHealth - amount);
+			// if (currentHealth != knownHealth) {
+			// 	component.setHealth(currentHealth);
+			// }
 		}
     }
 

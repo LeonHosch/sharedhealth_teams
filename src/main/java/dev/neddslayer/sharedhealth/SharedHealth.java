@@ -38,6 +38,7 @@ public class SharedHealth implements ModInitializer {
             boolean limitHealthValue = world.getGameRules().getValue(LIMIT_HEALTH);
             if (currentHealthValue != lastHealthValue && currentHealthValue) {
                 world.getServer().getPlayerManager().getPlayerList().forEach(player -> player.sendMessageToClient(Text.translatable("gamerule.sharedhealth.share_health.enabled").formatted(Formatting.GREEN, Formatting.BOLD), false));
+                System.out.println("Shared health aktiviert");
                 lastHealthValue = true;
             }
             else if (currentHealthValue != lastHealthValue) {
@@ -61,9 +62,12 @@ public class SharedHealth implements ModInitializer {
                         float currentHealth = playerEntity.getHealth();
 
                         if (currentHealth > finalKnownHealth) {
-                            playerEntity.damage(world, world.getDamageSources().genericKill(), currentHealth - finalKnownHealth);
+                            playerEntity.setHealth(finalKnownHealth);
+                            playerEntity.sendMessageToClient(Text.literal("Leben wurde angepasst"), false);
+                            // playerEntity.damage(world, world.getDamageSources().genericKill(), currentHealth - finalKnownHealth);
                         } else if (currentHealth < finalKnownHealth) {
-                            playerEntity.heal(finalKnownHealth - currentHealth);
+                            playerEntity.setHealth(finalKnownHealth);
+                            // playerEntity.heal(finalKnownHealth - currentHealth);
                         }
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
