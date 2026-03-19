@@ -1,7 +1,7 @@
 package dev.neddslayer.sharedhealth.components;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+// import net.minecraft.nbt.NbtCompound;
+// import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.storage.ReadView;

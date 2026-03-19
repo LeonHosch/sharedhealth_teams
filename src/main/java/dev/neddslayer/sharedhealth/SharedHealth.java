@@ -5,10 +5,10 @@ import dev.neddslayer.sharedhealth.components.SharedHealthComponent;
 import dev.neddslayer.sharedhealth.components.SharedHungerComponent;
 import dev.neddslayer.sharedhealth.components.SharedSaturationComponent;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+// import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+// import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -35,7 +35,7 @@ public class SharedHealth implements ModInitializer {
         ServerTickEvents.END_WORLD_TICK.register((world -> {
             boolean currentHealthValue = world.getGameRules().getValue(SYNC_HEALTH);
             boolean currentHungerValue = world.getGameRules().getValue(SYNC_HUNGER);
-            boolean limitHealthValue = world.getGameRules().getValue(LIMIT_HEALTH);
+            // boolean limitHealthValue = world.getGameRules().getValue(LIMIT_HEALTH);
             if (currentHealthValue != lastHealthValue && currentHealthValue) {
                 world.getServer().getPlayerManager().getPlayerList().forEach(player -> player.sendMessageToClient(Text.translatable("gamerule.sharedhealth.share_health.enabled").formatted(Formatting.GREEN, Formatting.BOLD), false));
                 System.out.println("Shared health aktiviert");
