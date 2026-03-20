@@ -26,12 +26,11 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "heal", at=@At("HEAD"))
     public void healListener(float amount, CallbackInfo ci) {
         if ((LivingEntity) (Object) this instanceof ServerPlayerEntity player && this.isAlive()) {
-            float currentHealth = player.getHealth();
             SharedHealthComponent component = SHARED_HEALTH.get(player.getEntityWorld().getScoreboard());
             float knownHealth = component.getHealth();
-            if (currentHealth == knownHealth) {
-                component.setHealth(knownHealth + amount);
-            }
+            // the previous check wont work anymore with the changed damage system
+            // players can heal multiple times now with one splash potion (depending on how many players are affected), which is kinda up for debate if wanted or not
+            component.setHealth(knownHealth + amount);
         }
     }
 }

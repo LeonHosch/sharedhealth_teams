@@ -28,12 +28,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     public void damageListener(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
 		// ensure that damage is only taken if the damage listener is handled; you shouldn't be able to punch invulnerable players, etc.
 		if (cir.getReturnValue() && this.isAlive()) {
-			float currentHealth = this.getHealth();
 			SharedHealthComponent component = SHARED_HEALTH.get(this.getEntityWorld().getScoreboard());
 			float knownHealth = component.getHealth();
-			if (currentHealth != knownHealth) {
-				component.setHealth(currentHealth);
-			}
+            // multiple players can now be damaged before the next tick sync and now it adds up
+            // before there seemed to be a logic problem where only the last damage before tick sync was counted
+			component.setHealth(knownHealth - amount);
 		}
     }
 

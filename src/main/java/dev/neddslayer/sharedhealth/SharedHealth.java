@@ -59,12 +59,9 @@ public class SharedHealth implements ModInitializer {
                 world.getPlayers().forEach(playerEntity -> {
                     try {
                         float currentHealth = playerEntity.getHealth();
-
-                        if (currentHealth > finalKnownHealth) {
-                            playerEntity.damage(world, world.getDamageSources().genericKill(), currentHealth - finalKnownHealth);
-                        } else if (currentHealth < finalKnownHealth) {
-                            playerEntity.heal(finalKnownHealth - currentHealth);
-                        }
+                        // setHealth doesnt recursively call the damage function, which is important because of the changed logic in said function
+                        // currentHealth > 0 is needed now because setHealth can set the players Health while they are dead which soft locks them in the death screen
+                        if (currentHealth != finalKnownHealth && currentHealth > 0) playerEntity.setHealth(finalKnownHealth);
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
