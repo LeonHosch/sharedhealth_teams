@@ -8,6 +8,7 @@ Original Repository: https://github.com/Neddslayer/sharedhealth
 ![SharedHealth Logo](https://github.com/Neddslayer/sharedhealth/blob/master/src/main/resources/assets/sharedhealth/textures/icon.png)
 
 ---
+</div>
 
 ## Features
 
@@ -50,5 +51,3 @@ SharedHealth uses Minecraft's built-in `/team` system:
 - **shareHunger** → Enables global shared hunger (not team-based)
 
 ---
-
-</div>
