@@ -1,9 +1,10 @@
 <div align="center">
 
-# SharedHealth
+# SharedHealth forked for Team compatibility
 
-A Fabric Minecraft mod that syncs health (and optionally hunger) between players.
+A Fabric Minecraft mod that syncs health in teams (and optionally hunger globally) between players.
 
+Original Repository: https://github.com/Neddslayer/sharedhealth
 ![SharedHealth Logo](https://github.com/Neddslayer/sharedhealth/blob/master/src/main/resources/assets/sharedhealth/textures/icon.png)
 
 ---
